@@ -1,0 +1,3 @@
+uri: bolt://localhost:7687
+userName: neo4j_sub
+password: neo4j_sub_tim
