@@ -102,11 +102,11 @@ $ python3 delpoint_in_gdb.py -i 001 002 003 -s Neo4j_enterprise.yaml -ie EP_
 	* ('-w', '--waypoints')
 	* ('-alg', '--algorithm')
 
-**Usage:
+* Usage:
 ```shell
 $ python3 findingPath.py -i 001 002 003 -n Neo4j_enterprise.yaml -s 100,2672,1887 -g 300,1415,2175
 $ python3 findingPath.py -i 001 002 003 -n Neo4j_enterprise.yaml -s 100,2898,1732 -g 300,1415,2175 -w 100,2100,2048 200,2140,2678 300,707,2640
 $ python3 findingPath.py -i 001 002 003 -n Neo4j_enterprise.yaml -s 100,2898,1732 -g 300,1415,2175 -w 100,2100,2048 200,2140,2678 300,707,2640 -alg st
 ```
 
- ### It is noted that the Neo4j access provided by author is in the read-only mode and ready-to-use. Thus, please ignore step 1,2,3 for making database (in cased you want to make your own database) and go directly to step 4 to implement the algorism. ###
+#### It is noted that the Neo4j access provided by author is in the read-only mode and ready-to-use. Thus, please ignore step 1,2,3 for making database (in cased you want to make your own database) and go directly to step 4 to implement the algorism. ####
