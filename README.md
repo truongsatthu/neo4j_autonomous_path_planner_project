@@ -20,7 +20,6 @@ This package also includes methodology for generating graph database Neo4j from 
 
 <br/>
 <p align="center">
-<<<<<<< HEAD
 _________ __maintenance by "nguyentruong.oto@gmail.com"__ _________ 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 </p>
@@ -30,12 +29,6 @@ _________ __maintenance by "nguyentruong.oto@gmail.com"__ _________
 $ git clone https://github.com/truongsatthu/neo4j_autonomous_path_planner_project.git
 ```
 
-=======
-___________maintenance by "nguyentruong.oto@gmail.com"___________ 
-+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-</p>
-
->>>>>>> 75856a6bd2151bc06a4c2e48d9556990a774d02b
 ## Usage: ##
 * Step 1: Creating graph_database Neo4j
 * Step 2: Adding elevator point at each floor
