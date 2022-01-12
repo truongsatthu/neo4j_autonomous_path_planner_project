@@ -20,9 +20,14 @@ This package also includes methodology for generating graph database Neo4j from 
 
 <br/>
 <p align="center">
-___________maintenance by "nguyentruong.oto@gmail.com"___________ 
+_________ __maintenance by "nguyentruong.oto@gmail.com"__ _________ 
 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 </p>
+
+## Installation neo4j - graph_based_autonomous_path_planner package ##
+```shell
+$ git clone https://github.com/truongsatthu/neo4j_autonomous_path_planner_project.git
+```
 
 ## Usage: ##
 * Step 1: Creating graph_database Neo4j
