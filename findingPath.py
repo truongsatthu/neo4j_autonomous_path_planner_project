@@ -49,43 +49,45 @@ def plotVoronoiPath(path):
         ax.plot([float(elevs[i][2])], [float(elevs[i][1])], [float(elevs[i][0])], 'yo', markersize=3) 
     plt.show()
 
-#class NODE():
-def __init__(self,*args):
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-i', '--id_map', help='map ID', nargs='+', required=True)
-    parser.add_argument('-n', '--neo4j_file', help='neo4j setting file', nargs='+', required=True)
-    parser.add_argument('-s', '--start_pos', help='start position', nargs='+', required=True)
-    parser.add_argument('-g', '--goal_pos', help='goal position', nargs='+', required=True)
-    parser.add_argument('-w', '--waypoints', help='waypoints position', nargs='+', required=False)
-    parser.add_argument('-alg', '--algorithm', help='planning algorithm', nargs='+', required=False)
-    args = parser.parse_args()
+class DBnode():
+    def __init__(self,*args):
+        parser = argparse.ArgumentParser()
+        parser.add_argument('-i', '--id_map', help='map ID', nargs='+', required=True)
+        parser.add_argument('-n', '--neo4j_file', help='neo4j setting file', nargs='+', required=True)
+        parser.add_argument('-s', '--start_pos', help='start position', nargs='+', required=True)
+        parser.add_argument('-g', '--goal_pos', help='goal position', nargs='+', required=True)
+        parser.add_argument('-w', '--waypoints', help='waypoints position', nargs='+', required=False)
+        parser.add_argument('-alg', '--algorithm', help='planning algorithm', nargs='+', required=False)
+        args = parser.parse_args()
 
-    _id_map = args.id_map
-    _neo4j_path = args.neo4j_file[0]
-    _start_pos = list((args.start_pos[0]).split(","))
-    _goal_pos = list((args.goal_pos[0]).split(","))
-    _waypoints_list = args.waypoints
-    _algorithm = args.algorithm
-    _neo4jDir = os.path.join(_neo4j_root_dir, _neo4j_path)
-    
+        self._id_map = args.id_map
+        _neo4j_path = args.neo4j_file[0]
+        self._start_pos = list((args.start_pos[0]).split(","))
+        self._goal_pos = list((args.goal_pos[0]).split(","))
+        self._waypoints_list = args.waypoints
+        self._algorithm = args.algorithm
+        self._neo4jDir = os.path.join(_neo4j_root_dir, _neo4j_path)
+        with open(self._neo4jDir, 'r', encoding='utf-8') as neo4j:
+            neo4jstring = neo4j.read()
+            neo4j_obj = yaml.safe_load(neo4jstring)
+        self.neo4jData = {
+                            "uri": neo4j_obj['uri'],
+                            "userName": neo4j_obj['userName'],
+                            "password": neo4j_obj['password']
+                    }
+
+def __number_list__(self):
     number_list = []
-    if (_waypoints_list != None):
-        for i in (range(len(_waypoints_list))):
-            number_list.append((list(_waypoints_list[i].split(","))))
-    number_list.insert(0,_start_pos)
-    number_list.insert(len(number_list),_goal_pos)
+    if (waypoints_list != None):
+        for i in (range(len(self._waypoints_list))):
+            number_list.append((list(self._waypoints_list[i].split(","))))
+    number_list.insert(0,start_pos)
+    number_list.insert(len(number_list),goal_pos)
+    return number_list
 
-    with open(_neo4jDir, 'r', encoding='utf-8') as neo4j:
-        neo4jstring = neo4j.read()
-        neo4j_obj = yaml.safe_load(neo4jstring)
-    neo4jData = {
-                        "uri": neo4j_obj['uri'],
-                        "userName": neo4j_obj['userName'],
-                        "password": neo4j_obj['password']
-                }
-    return (_id_map,neo4jData,_start_pos,_goal_pos,_waypoints_list,_algorithm,number_list)
+    #return (_id_map,neo4jData,_start_pos,_goal_pos,_waypoints_list,_algorithm,number_list)
 
-def READ_NODES_2EDGES(_id_map,neo4jData,*args):
+def READ_NODES_2EDGES(self,*args): # _id_map, neo4jData
     points = []
     edges  = []
     elevs  = []
@@ -98,7 +100,7 @@ def READ_NODES_2EDGES(_id_map,neo4jData,*args):
     graphDB_Driver  = GraphDatabase.driver(uri, auth=(userName, password))
 
     with graphDB_Driver.session() as graphDB_Session:
-        for args in _id_map:
+        for args in id_map: # _id_map
             Obs_cal='MATCH (n) WHERE labels(n)=["GDB_'+ args +'"] AND n.Identifier = "Obs_'+ args +'" RETURN n'
             Ver_cal='MATCH (n)-[r]->(m) WHERE labels(n)=["GDB_'+ args +'"] RETURN n,r,m'
             Ele_cal='MATCH (n) WHERE labels(n)=["GDB_'+ args +'"] AND n.Identifier = "EP_'+ args +'" RETURN n'
@@ -192,12 +194,13 @@ def create_graph(edges):
 def heuristic(n1, n2):
     return ( (float(n1[0])-float(n2[0]))**2 +(float(n1[1])-float(n2[1]))**2 +(float(n1[2])-float(n2[2]))**2 )**0.5
 
-def a_star_graph(graph, _start_pos, _goal_pos, h):
+
+def a_star_graph(graph, start_pos, goal_pos, h): # graph,_start_pos,_goal_pos, h
     path = []
     path_cost = 0
     queue = PriorityQueue()
-    queue.put((0, _start_pos))
-    visited = set(_start_pos)
+    queue.put((0, start_pos))
+    visited = set(start_pos)
 
     branch = {}
     found = False
@@ -205,12 +208,12 @@ def a_star_graph(graph, _start_pos, _goal_pos, h):
     while not queue.empty():
         item = queue.get()
         current_node = item[1]
-        if current_node == _start_pos:
+        if current_node == start_pos:
             current_cost = 0.0
         else:
             current_cost = branch[current_node][0]
 
-        if current_node == _goal_pos:
+        if current_node == goal_pos:
             print('Found a path.')
             found = True
             break
@@ -218,7 +221,7 @@ def a_star_graph(graph, _start_pos, _goal_pos, h):
             for next_node in graph[current_node]:
                 cost = graph.edges[current_node, next_node]['weight']
                 branch_cost = current_cost + cost
-                queue_cost = branch_cost + h(next_node, _goal_pos)
+                queue_cost = branch_cost + h(next_node, goal_pos)
 
                 if next_node not in visited:
                     visited.add(next_node)
@@ -226,10 +229,10 @@ def a_star_graph(graph, _start_pos, _goal_pos, h):
                     queue.put((queue_cost, next_node))
     if found:
         # retrace steps
-        n = _goal_pos
+        n = goal_pos
         path_cost = branch[n][0]
-        path.append(_goal_pos)
-        while branch[n][1] != _start_pos:
+        path.append(goal_pos)
+        while branch[n][1] != start_pos:
             path.append(branch[n][1])
             n = branch[n][1]
         path.append(branch[n][1])
@@ -265,7 +268,15 @@ if __name__ == "__main__":
         print("[********* Please input arguments **********]\n")
         print("+++++++++++++++++++++++++++++++++++++++++++++\n")
         sys.exit()
-    id_map,neo4jData,start_pos,goal_pos,waypoints_list,algorithm,number_list = __init__(args)
+    neo4jNode = DBnode(args)
+    id_map = neo4jNode._id_map
+    neo4jData =  neo4jNode.neo4jData
+    start_pos = neo4jNode._start_pos
+    goal_pos  = neo4jNode._goal_pos
+    waypoints_list = neo4jNode._waypoints_list
+    algorithm = neo4jNode._algorithm
+    number_list = __number_list__(waypoints_list)
+    #id_map,neo4jData,start_pos,goal_pos,waypoints_list,algorithm,number_list = __init__(args)
     points,edges,elevs = READ_NODES_2EDGES(id_map,neo4jData)
     print(elevs)
 #****************************************************************************************************
